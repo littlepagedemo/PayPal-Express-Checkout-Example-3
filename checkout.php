@@ -30,27 +30,10 @@ if ($_REQUEST['useraction'] == "commit")
 	if ($_SESSION['cart_item_arr']) 
 	{
 
-		// Cart items
-		$payment_request = get_payment_request();
-		
-		$paymentAmount = $_SESSION["Payment_Amount"];	// from cart.php
-		
-		
-		//-------------------------------------------------
 		// Data to be sent to paypal - in SetExpressCheckout
-		//--------------------------------------------------
-		$shipping_data = '';
-		if($shipping_amt)
-				$shipping_data = '&PAYMENTREQUEST_0_SHIPPINGAMT='.urlencode($shipping_amt);
-				
-		$tax_data = '';
-		if($tax_amt)
-				$tax_data = '&PAYMENTREQUEST_0_TAXAMT='.urlencode($tax_amt);		
+		$padata = get_payment_request();
 		
-		$padata = 	$shipping_data.
-					$tax_data.					
-				 	$payment_request;				
-		//echo '<br>'.$padata;			
+		$paymentAmount = $_SESSION["Payment_Amount"];	// from cart.php	
 					
 					
 		//'--------------------------------------------------------------------		
@@ -64,7 +47,7 @@ if ($_REQUEST['useraction'] == "commit")
 		//' Calls the SetExpressCheckout API call
 		//' Prepares the parameters for the SetExpressCheckout API Call
 		//'-------------------------------------------------------------		
-		$resArray = CallShortcutExpressCheckout ($paymentAmount, $PayPalCurrencyCode, $paymentType, $PayPalReturnURL, $PayPalCancelURL, $padata);
+		$resArray = CallShortcutExpressCheckout ($paymentAmount, $padata);
 		
 		$ack = strtoupper($resArray["ACK"]);
 		if($ack=="SUCCESS" || $ack=="SUCCESSWITHWARNING")
